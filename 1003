@@ -6,6 +6,6 @@ int main()
     scanf("%d", &B);
     C = A + B;
     printf("SOMA = %d\n", C);
-
+ 
     return 0;
 }
