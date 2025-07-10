@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+typedef struct {
+    int pessoas;
+    int consumo;
+} Imovel;
+
+int compare(const void *a, const void *b) {
+    Imovel *x = (Imovel *)a;
+    Imovel *y = (Imovel *)b;
+    
+    int consumo_por_pessoa_x = x->consumo / x->pessoas;
+    int consumo_por_pessoa_y = y->consumo / y->pessoas;
+
+    if (consumo_por_pessoa_x != consumo_por_pessoa_y)
+        return consumo_por_pessoa_x - consumo_por_pessoa_y;
+    else
+        return x->pessoas - y->pessoas;
+}
+
+int main() {
+    int N;
+    int cidade = 1;
+    int primeira = 1;
+
+    while (scanf("%d", &N), N != 0) {
+        if (!primeira)
+            printf("\n");
+        primeira = 0;
+
+        Imovel imoveis[N];
+        int total_consumo = 0;
+        int total_pessoas = 0;
+
+        for (int i = 0; i < N; i++) {
+            int pessoas, consumo;
+            scanf("%d %d", &pessoas, &consumo);
+
+            imoveis[i].pessoas = pessoas;
+            imoveis[i].consumo = consumo;
+
+            total_consumo += consumo;
+            total_pessoas += pessoas;
+        }
+
+        // Ordena por consumo médio por pessoa (arredondado para baixo)
+        qsort(imoveis, N, sizeof(Imovel), compare);
+
+        // Agrupar pessoas com o mesmo consumo por pessoa
+        printf("Cidade# %d:\n", cidade++);
+        int grupo_pessoas = imoveis[0].pessoas;
+        int consumo_por_pessoa = imoveis[0].consumo / imoveis[0].pessoas;
+
+        for (int i = 1; i < N; i++) {
+            int atual = imoveis[i].consumo / imoveis[i].pessoas;
+            if (atual == consumo_por_pessoa) {
+                grupo_pessoas += imoveis[i].pessoas;
+            } else {
+                printf("%d-%d ", grupo_pessoas, consumo_por_pessoa);
+                grupo_pessoas = imoveis[i].pessoas;
+                consumo_por_pessoa = atual;
+            }
+        }
+        printf("%d-%d\n", grupo_pessoas, consumo_por_pessoa);
+
+        // Consumo médio com duas casas decimais, sem arredondamento
+        double media = (double)total_consumo / total_pessoas;
+        printf("Consumo medio: %.2lf m3.\n", (int)(media * 100) / 100.0);
+    }
+
+    return 0;
+}
