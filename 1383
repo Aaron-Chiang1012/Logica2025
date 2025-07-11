@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <string.h>
+
+int check_line(int grid[9][9]) {
+    for (int i = 0; i < 9; i++) {
+        int seen[10] = {0};
+        for (int j = 0; j < 9; j++) {
+            int num = grid[i][j];
+            if (seen[num]) return 0;
+            seen[num] = 1;
+        }
+    }
+    return 1;
+}
+
+int check_column(int grid[9][9]) {
+    for (int j = 0; j < 9; j++) {
+        int seen[10] = {0};
+        for (int i = 0; i < 9; i++) {
+            int num = grid[i][j];
+            if (seen[num]) return 0;
+            seen[num] = 1;
+        }
+    }
+    return 1;
+}
+
+int check_subgrid(int grid[9][9]) {
+    for (int start_row = 0; start_row < 9; start_row += 3) {
+        for (int start_col = 0; start_col < 9; start_col += 3) {
+            int seen[10] = {0};
+            for (int i = start_row; i < start_row + 3; i++) {
+                for (int j = start_col; j < start_col + 3; j++) {
+                    int num = grid[i][j];
+                    if (seen[num]) return 0;
+                    seen[num] = 1;
+                }
+            }
+        }
+    }
+    return 1;
+}
+
+int main() {
+    int n, grid[9][9];
+    scanf("%d", &n);
+    for (int t = 1; t <= n; t++) {
+        for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
+                scanf("%d", &grid[i][j]);
+
+        int valid = check_line(grid) && check_column(grid) && check_subgrid(grid);
+
+        printf("Instancia %d\n", t);
+        if (valid)
+            printf("SIM\n\n");
+        else
+            printf("NAO\n\n");
+    }
+    return 0;
+}
